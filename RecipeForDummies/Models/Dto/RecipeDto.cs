@@ -17,5 +17,6 @@ namespace RecipeForDummies.Models.Dto
         public List<IFormFile> Images { get; set; }
         public Complexity Complexity { get; set; }
         public string CategoryListJson { get; set; }
+        public int ForHowManyPeople { get; set; }
     }
 }

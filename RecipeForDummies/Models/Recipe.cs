@@ -29,6 +29,8 @@ namespace RecipeForDummies.Models
         public string IngredientsJson { get; set; }       
         [Required]
         public Complexity Complexity { get; set; }
+        [Required]
+        public int ForHowManyPeople { get; set; }
 
 
         public ICollection<RecipeComment> RecipeComments { get; set; }

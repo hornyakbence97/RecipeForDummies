@@ -75,6 +75,7 @@ namespace RecipeForDummies.Controllers
                 UserId = userManager.GetUserId(this.User),
                 Tumbnail = dataThumbnail,
                Uploaded = DateTime.Now,
+               ForHowManyPeople = recipeDto.ForHowManyPeople
                
             };
             dbContext.Recipe.Add(recipe);
