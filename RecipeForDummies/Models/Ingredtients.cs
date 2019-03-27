@@ -9,5 +9,6 @@ namespace RecipeForDummies.Models.Dto
     {
         public string Name { get; set; }
         public int Number { get; set; }
+        public string Si { get; set; }
     }
 }

@@ -45,28 +45,28 @@
                     switch (item)
                     {
                         case Complexity.DormitoryEasy:
-                            <option>Dormitory Easy</option>
+                            <option value="@item">Dormitory Easy</option>
                             break;
                         case Complexity.VeryEasy:
-                            <option>Very Easy</option>
+                            <option value="@item">Very Easy</option>
                             break;
                         case Complexity.Easy:
-                            <option>Easy</option>
+                            <option value="@item">Easy</option>
                             break;
                         case Complexity.Normal:
-                            <option selected>Normal</option>
+                            <option value="@item" selected>Normal</option>
                             break;
                         case Complexity.LittleHard:
-                            <option>Little Hard</option>
+                            <option value="@item">Little Hard</option>
                             break;
                         case Complexity.VeryHard:
-                            <option>Very Hard</option>
+                            <option value="@item">Very Hard</option>
                             break;
                         case Complexity.GordonRamseyHard:
-                            <option>Gordon Ramsey Hard</option>
+                            <option value="@item">Gordon Ramsey Hard</option>
                             break;
                         default:
-                            <option>Normal</option>
+                            <option value="@item">Normal</option>
                             break;
                     }
                 }
@@ -110,6 +110,7 @@
             <div id="ing" name="ing"></div>
             <input type="text" class="form-control" id="IngredTemp" placeholder="Enter name..." name="IngredTemp">
             <input type="number" class="form-control" id="IngredTempNum" placeholder="1" value="1" name="IngredTempNum">
+            <input type="text" class="form-control" id="IngredSi" placeholder="Enter kg, liter, etc..." name="IngredSi">
             <input type="hidden" id="IngredientsJson" name="IngredientsJson" />
             <button type="button" name="IngredButton" id="IngredButton" class="btn btn-default">Add ingredient</button>
         </div>

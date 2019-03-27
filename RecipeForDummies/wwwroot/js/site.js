@@ -15,13 +15,13 @@
 };
 
 var ingredients = [];
-function AddIngredient(item, number) {
+function AddIngredient(item, number, si) {
 
-    var obj = { "Name": item, "Number": number };
+    var obj = { "Name": item, "Number": number, "Si": si };
 
     ingredients.push(obj);
 
-    $("#ing").append("<li>" + obj.Name + ": " + obj.Number + "</li>");
+    $("#ing").append("<li>" + obj.Name + ": " + obj.Number + " " + obj.Si + "</li>");
 
 }
 
@@ -34,8 +34,8 @@ function AddInstruction(item) {
 }
 
 $("#IngredButton").on("click", function () {
-    if ($("#IngredTemp").val() !== "" && $("#IngredTempNum").val() > 0) {
-        AddIngredient($("#IngredTemp").val(), $("#IngredTempNum").val());
+    if ($("#IngredTemp").val() !== "" && $("#IngredTempNum").val() > 0 && $("#IngredSi").val() !== "") {
+        AddIngredient($("#IngredTemp").val(), $("#IngredTempNum").val(), $("#IngredSi").val());
 
         $("#IngredTemp").val("");
         $("#IngredTempNum").val(1);
@@ -67,8 +67,13 @@ function UploadRecipes() {
     $("#CategoryListJson").val(jsonData);
     $("#IngredientsJson").val(JSON.stringify(ingredients));
     $("#InsturctionsJson").val(JSON.stringify(instructions));
-    
-     $('#UploadRecipe').submit();
+
+    if ($("#CategoryListJson").val() !== "[null]") {
+        $('#UploadRecipe').submit();
+    }
+    else {
+        alert("Select categories!");
+    }
     console.log(jsonData);
 }
 
