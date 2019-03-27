@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RecipeForDummies.Models;
 
@@ -10,8 +13,25 @@ namespace RecipeForDummies.Controllers
 {
     public class HomeController : Controller
     {
+        private RoleManager<IdentityRole> roleManager;
+
+        public HomeController(RoleManager<IdentityRole> roleManager)
+        {
+            this.roleManager = roleManager;
+            this.CreateRoles();
+        }
+
+        private void CreateRoles()
+        {
+            if (!roleManager.RoleExistsAsync("Moderator").Result)
+            {
+                roleManager.CreateAsync(new IdentityRole("Moderator"));
+            }
+        }
+
         public IActionResult Index()
         {
+
             return View();
         }
 
@@ -21,7 +41,7 @@ namespace RecipeForDummies.Controllers
 
             return View();
         }
-
+        [Authorize]
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";

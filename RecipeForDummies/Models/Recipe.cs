@@ -26,13 +26,14 @@ namespace RecipeForDummies.Models
         [Required]
         public string InsturctionsJson { get; set; }
         [Required]
-        public string IngredientsJson { get; set; }
+        public string IngredientsJson { get; set; }       
         [Required]
-        public string ImageUrlListJson { get; set; }
-       
+        public Complexity Complexity { get; set; }
+
 
         public ICollection<RecipeComment> RecipeComments { get; set; }
         public ICollection<RecipeRating> RecipeRatings { get; set; }
+        public ICollection<ImageAndRecipeConnection> ImageAndRecipeConnections { get; set; }
 
         public string UserId { get; set; }
         public IdentityUser User { get; set; }

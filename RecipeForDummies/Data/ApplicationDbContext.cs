@@ -18,7 +18,9 @@ namespace RecipeForDummies.Data
         public DbSet<Recipe> Recipe { get; set; }
         public DbSet<RecipeComment> RecipeComment { get; set; }
         public DbSet<RecipeRating> RecipeRating { get; set; }
+        public DbSet<RecipeCategory> RecipeCategory { get; set; }
         public DbSet<RecipeAndCategoryConnectionTable> RecipeAndCategoryConnectionTable { get; set; }
         public DbSet<UserAndRecipeAddedToFavouriteConnectionTable> UserAndRecipeAddedToFavouriteConnectionTable { get; set; }
+        public DbSet<ImageAndRecipeConnection> ImageAndRecipeConnection { get; set; }
     }
 }

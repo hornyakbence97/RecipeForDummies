@@ -1,0 +1,119 @@
+﻿
+@{
+    @model IEnumerable<RecipeCategory>
+    ViewData["Title"] = "UploadRecipe";
+    Layout = "~/Views/Recipe/_LayoutRecipe.cshtml";
+    //    public class RecipeDto
+    //{
+    //    public string Title { get; set; }
+    //    public IFormFile Tumbnail { get; set; }
+    //    public string SmallDescription { get; set; }
+    //    public string InsturctionsJson { get; set; }
+    //    public string IngredientsJson { get; set; }
+    //    public List<IFormFile> Images { get; set; }
+    //    public Complexity Complexity { get; set; }
+    //    public string CategoryListJson { get; set; }
+    //}
+}
+
+
+
+<div class="container">
+    <h2>Upload a new Recipe</h2>
+    <form asp-action="UploadRecipe" asp-controller="Recipe" enctype="multipart/form-data" method="post" name="UploadRecipe" id="UploadRecipe">
+
+        <div class="form-group">
+            <label for="Title">Title:</label>
+            <input type="text" class="form-control" id="Title" placeholder="Enter title..." name="Title">
+        </div>
+
+        <div class="form-group">
+            <label for="SmallDescription">Short information about the food:</label>
+            <input type="text" class="form-control" id="SmallDescription" placeholder="Enter short description..." name="SmallDescription">
+        </div>
+
+        <div class="form-group">
+            <label for="Tumbnail">Tumbnail picture:</label>
+            <input type="file" class="form-control" id="Tumbnail" name="Tumbnail">
+        </div>
+
+        <div class="form-group">
+            <label for="Complexity">Complexity:</label>
+            <select class="form-control" id="Complexity" name="Complexity">
+                @foreach (Complexity item in Enum.GetValues(typeof(Complexity)))
+                {
+                    switch (item)
+                    {
+                        case Complexity.DormitoryEasy:
+                            <option>Dormitory Easy</option>
+                            break;
+                        case Complexity.VeryEasy:
+                            <option>Very Easy</option>
+                            break;
+                        case Complexity.Easy:
+                            <option>Easy</option>
+                            break;
+                        case Complexity.Normal:
+                            <option selected>Normal</option>
+                            break;
+                        case Complexity.LittleHard:
+                            <option>Little Hard</option>
+                            break;
+                        case Complexity.VeryHard:
+                            <option>Very Hard</option>
+                            break;
+                        case Complexity.GordonRamseyHard:
+                            <option>Gordon Ramsey Hard</option>
+                            break;
+                        default:
+                            <option>Normal</option>
+                            break;
+                    }
+                }
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="Images">Upload images about the food:</label>
+            <input type="file" multiple class="form-control" id="Images" name="Images">
+        </div>
+
+        <div class="form-group">
+            <label for="CategoryList">Select Categories:</label>
+            <div class="checkbox">
+
+                @foreach (var item in Model)
+                {
+                    <label><input type="checkbox" value="@item.CategoryName" id="@item.CategoryName" name="Category">@item.CategoryName</label>
+                }
+
+            </div>
+            <input type="hidden" name="CategoryListJson" id="CategoryListJson" />
+        </div>
+
+        @*<div class="form-group">
+            <label for="InsturctionsJson">InsturctionsJson:</label>
+            <input type="text" class="form-control" id="InsturctionsJson" placeholder="Enter title..." name="InsturctionsJson">
+        </div>*@
+
+        <div class="form-group">
+            <label for="IngredTemp">Instructions:</label>
+            <div id="inst" name="inst"></div>
+            <input type="text" class="form-control" id="InsTemp" placeholder="Enter instruction..." name="InsTemp">
+            <input type="hidden" id="InsturctionsJson" name="InsturctionsJson" />
+            <button type="button" name="InsButton" id="InsButton" class="btn btn-default">Add instruction</button>
+        </div>
+
+        <div class="form-group">
+            <label for="IngredTemp">Ingredients:</label>
+            <div id="ing" name="ing"></div>
+            <input type="text" class="form-control" id="IngredTemp" placeholder="Enter name..." name="IngredTemp">
+            <input type="number" class="form-control" id="IngredTempNum" placeholder="1" value="1" name="IngredTempNum">
+            <input type="hidden" id="IngredientsJson" name="IngredientsJson" />
+            <button type="button" name="IngredButton" id="IngredButton" class="btn btn-default">Add ingredient</button>
+        </div>
+
+        <button type="button" name="UploadButton" id="UploadButton" class="btn btn-default">Upload Recipe</button>
+    </form>
+</div>

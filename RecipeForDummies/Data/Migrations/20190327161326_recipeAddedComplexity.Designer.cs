@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeForDummies.Data;
 
 namespace RecipeForDummies.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190327161326_recipeAddedComplexity")]
+    partial class recipeAddedComplexity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,9 +138,11 @@ namespace RecipeForDummies.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -169,32 +173,17 @@ namespace RecipeForDummies.Data.Migrations
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("RecipeForDummies.Models.ImageAndRecipeConnection", b =>
-                {
-                    b.Property<int>("ImageAndRecipeConnectionId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<byte[]>("Image");
-
-                    b.Property<int>("RecipeId");
-
-                    b.HasKey("ImageAndRecipeConnectionId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("ImageAndRecipeConnection");
                 });
 
             modelBuilder.Entity("RecipeForDummies.Models.Recipe", b =>
@@ -204,6 +193,9 @@ namespace RecipeForDummies.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Complexity");
+
+                    b.Property<string>("ImageUrlListJson")
+                        .IsRequired();
 
                     b.Property<string>("IngredientsJson")
                         .IsRequired();
@@ -372,14 +364,6 @@ namespace RecipeForDummies.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("RecipeForDummies.Models.ImageAndRecipeConnection", b =>
-                {
-                    b.HasOne("RecipeForDummies.Models.Recipe", "Recipe")
-                        .WithMany("ImageAndRecipeConnections")
-                        .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
