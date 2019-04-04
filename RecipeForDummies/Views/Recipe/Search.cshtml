@@ -1,8 +1,43 @@
 ﻿
 @{
+    @model IEnumerable<RecipeCategory>
     ViewData["Title"] = "Search";
     Layout = "~/Views/Recipe/_LayoutRecipe.cshtml";
 }
 
 <h2>Search</h2>
+
+<div class="container">
+   
+    <form asp-action="Search" method="post">
+        <div class="form-group">
+            <label for="search">Search in title:</label>
+            <input type="text" class="form-control" id="search" name="search">
+        </div>
+
+        <div class="form-group">
+            <label for="CategoryList">Select Categories (leave empty if you want to search in all category):</label>
+            <div class="checkbox">
+
+                @foreach (var item in Model)
+                {
+                    <label><input type="checkbox" value="@item.CategoryName" id="@item.CategoryName" name="Category">@item.CategoryName</label>
+                }
+
+            </div>
+            <input type="hidden" name="CategoryListJson" id="CategoryListJson" />
+            <input type="hidden" name="Text" />
+            <input type="hidden" name="Input" />
+            <input type="hidden" name="Selected" />
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+
+    </form>
+</div>
+
+
+
+
+
+
 

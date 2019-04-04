@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using RecipeForDummies.Data;
 using RecipeForDummies.Models;
@@ -105,8 +106,61 @@ namespace RecipeForDummies.Controllers
         [HttpGet]
         public IActionResult Search()
         {
-            return View();
+            return View(dbContext.RecipeCategory);
         }
+
+
+        [HttpPost]
+        public IActionResult Search(SerachDto dto)
+        {
+            if (dto.search != null && dto.search.Length > 0)
+            {
+                var se = dbContext.Recipe.Where(x => x.Title.ToLower().Contains(dto.search.ToLower()) || x.SmallDescription.ToLower().Contains(dto.search.ToLower()));
+                List<Recipe> recipesList = new List<Recipe>();
+                if (dto.Category != null && dto.Category.Count() > 0)
+                {
+                    foreach (var item in se)
+                    {
+                        var temp = dbContext.RecipeAndCategoryConnectionTable.Where(x => x.RecipeId == item.RecipeId && dto.Category.Contains(x.RecipeCategory.CategoryName));
+                        foreach (var okItem in temp)
+                        {
+                            var kk = okItem.Recipe;
+                            if (!recipesList.Contains(kk))
+                            {
+                                recipesList.Add(kk);
+                            }
+                        }
+                    }
+                    return View("Browse", recipesList);
+                }
+                else
+                {
+                    return View("Browse", se);
+                }
+            }
+            else
+            {
+                List<Recipe> recipesList = new List<Recipe>();
+                if (dto.Category != null && dto.Category.Count() > 0)
+                {
+                    foreach (var item in dbContext.Recipe)
+                    {
+                        var temp = dbContext.RecipeAndCategoryConnectionTable.Where(x => x.RecipeId == item.RecipeId && dto.Category.Contains(x.RecipeCategory.CategoryName));
+                        foreach (var okItem in temp)
+                        {
+                            var kk = okItem.Recipe;
+                            if (!recipesList.Contains(kk))
+                            {
+                                recipesList.Add(kk);
+                            }
+                        }
+                    }
+                    return View("Browse", recipesList);
+                }
+            }
+            return RedirectToAction("Search");
+        }
+
 
         [HttpGet]
         public IActionResult Browse()
