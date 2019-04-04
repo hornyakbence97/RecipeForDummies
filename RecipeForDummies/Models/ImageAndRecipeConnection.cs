@@ -14,8 +14,8 @@ namespace RecipeForDummies.Models
         public int ImageAndRecipeConnectionId { get; set; }
 
         [ForeignKey("Recipe")]
-        public int RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
+        public virtual int RecipeId { get; set; }
+        public virtual Recipe Recipe { get; set; }
 
         public byte[] Image { get; set; }
     }

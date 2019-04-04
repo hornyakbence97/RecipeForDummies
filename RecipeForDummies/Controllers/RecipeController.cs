@@ -27,7 +27,7 @@ namespace RecipeForDummies.Controllers
         }
         public IActionResult Index()
         {
-            return RedirectToAction("UploadRecipe");
+            return RedirectToAction("Browse");
         }
 
         [Authorize]
@@ -97,6 +97,106 @@ namespace RecipeForDummies.Controllers
 
 
             return View(dbContext.RecipeCategory);
+        }
+
+
+
+
+        [HttpGet]
+        public IActionResult Search()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Browse()
+        {
+
+            //vissza az 50 legújabb receptet értékelés szerint sorba rendezve
+
+            var ordered = dbContext.Recipe.OrderBy(x => x.Uploaded);
+            var firstordered = ordered.Take(50);
+           
+            ordered = firstordered.OrderByDescending(x => (x.RecipeRatings.Count>0) ? x.RecipeRatings.Average(z => z.RateValue) : 0);
+
+            return View(ordered);
+        }
+        [HttpGet]
+        public IActionResult Recipe(int id)
+        {
+            Recipe recipe = dbContext.Recipe.Where(x => x.RecipeId == id).FirstOrDefault();
+            ViewData["userid"] = userManager.GetUserId(this.User);
+            ViewData["category"] = dbContext.RecipeAndCategoryConnectionTable.Where(x => x.RecipeId == id);
+            return View(recipe);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RateIt(string rate, string recipeId, string userId)
+        {
+            var user = userManager.Users.Where(x => x.Id == userId).FirstOrDefault();
+            if (user != null)
+            {
+                int rateN = int.Parse(rate);
+                int recipeIdNum = int.Parse(recipeId);
+
+                var already = dbContext.RecipeRating.Where(x => x.UserId == userId && x.ReceipeId == recipeIdNum).FirstOrDefault();
+                if (already != null)
+                {
+                    dbContext.RecipeRating.Remove(already);
+                }
+
+
+                dbContext.RecipeRating.Add(new RecipeRating() {RateValue = rateN, ReceipeId = recipeIdNum, UserId = userId });
+                dbContext.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+        public IActionResult SendComment(string recipeId, string userId, string comment)
+        {
+            if (comment != null && comment.Length > 0)
+            {
+                var user = userManager.Users.Where(x => x.Id == userId).FirstOrDefault();
+                RecipeComment recipeComment = new RecipeComment() { CommentText = comment, ReceipeId = int.Parse(recipeId), UserId = userId, UploadedOrModified = DateTime.Now };
+                dbContext.RecipeComment.Add(recipeComment);
+
+                dbContext.SaveChanges();
+            }
+            return Ok();
+        }
+
+
+        public IActionResult RenderImage(int id, int num, bool isTumbnail)
+        {
+            Recipe recipe = dbContext.Recipe.Where(x => x.RecipeId == id).FirstOrDefault();
+            byte[] photoBack = null;
+            if (isTumbnail)
+            {
+                photoBack = recipe.Tumbnail;
+            }
+            else
+            {
+                int i = 0;
+                
+                foreach (var item in recipe.ImageAndRecipeConnections)
+                {
+                    if (num == i)
+                    {
+                        photoBack = item.Image;
+                        break;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
+
+            }
+
+            return File(photoBack, "image/png");
         }
 
 

@@ -5,6 +5,97 @@ body {
     padding-bottom: 20px;
 }
 
+.carousel-inner > .item > img {
+    height: 70vh;
+    width: auto;
+    
+}
+
+.glyphicon {
+    margin-right: 5px;
+}
+
+.rating .glyphicon {
+    font-size: 22px;
+}
+
+.rating-num {
+    margin-top: 0px;
+    font-size: 54px;
+}
+
+.progress {
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    text-align: left;
+}
+
+.rating-desc .col-md-3 {
+    padding-right: 0px;
+}
+
+.sr-only {
+    margin-left: 5px;
+    overflow: visible;
+    clip: auto;
+}
+
+.rating {
+    float: left;
+}
+
+    /* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
+      follow these rules. Every browser that supports :checked also supports :not(), so
+      it doesn’t make the test unnecessarily selective */
+    .rating:not(:checked) > input {
+        position: absolute;
+        top: -9999px;
+        clip: rect(0,0,0,0);
+    }
+
+    .rating:not(:checked) > label {
+        float: right;
+        width: 1em;
+        /* padding:0 .1em; */
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        font-size: 300%;
+        /* line-height:1.2; */
+        color: #ddd;
+    }
+
+        .rating:not(:checked) > label:before {
+            content: '★ ';
+        }
+
+    .rating > input:checked ~ label {
+        color: dodgerblue;
+    }
+
+    .rating:not(:checked) > label:hover,
+    .rating:not(:checked) > label:hover ~ label {
+        color: dodgerblue;
+    }
+
+    .rating > input:checked + label:hover,
+    .rating > input:checked + label:hover ~ label,
+    .rating > input:checked ~ label:hover,
+    .rating > input:checked ~ label:hover ~ label,
+    .rating > label:hover ~ input:checked ~ label {
+        color: dodgerblue;
+    }
+
+    .rating > label:active {
+        position: relative;
+        top: 2px;
+        left: 2px;
+    }
+
+
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {

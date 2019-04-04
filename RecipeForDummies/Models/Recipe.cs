@@ -33,12 +33,12 @@ namespace RecipeForDummies.Models
         public int ForHowManyPeople { get; set; }
 
 
-        public ICollection<RecipeComment> RecipeComments { get; set; }
-        public ICollection<RecipeRating> RecipeRatings { get; set; }
-        public ICollection<ImageAndRecipeConnection> ImageAndRecipeConnections { get; set; }
+        public virtual ICollection<RecipeComment> RecipeComments { get; set; }
+        public virtual ICollection<RecipeRating> RecipeRatings { get; set; }
+        public virtual ICollection<ImageAndRecipeConnection> ImageAndRecipeConnections { get; set; }
 
-        public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public virtual string UserId { get; set; }
+        public virtual IdentityUser User { get; set; }
 
 
     }

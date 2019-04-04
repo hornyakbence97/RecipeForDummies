@@ -78,3 +78,68 @@ function UploadRecipes() {
 }
 
 $("#UploadButton").on("click", function () { UploadRecipes(); });
+
+
+
+
+function RateIt(rate, recipeId, userId, url) {
+    $.post(url, { rate: rate, recipeId: recipeId, userId: userId });
+    setTimeout(function () { location.reload(); }, 200);
+}
+
+function SendComment(recipeId, userId, url) {
+    var comment = $("#comment").val();
+
+    $.post(url, { recipeId: recipeId, userId: userId, comment: comment });
+    setTimeout(function () { location.reload(); }, 200);
+   
+}
+
+
+function LoadInstructions(json) {
+
+    var obje = JSON.parse(json.replace(/&quot;/g, '"'));
+
+    var l = obje.length;
+
+    for (var i = 0; i < l; i++) {
+        $("#instructions").append('<div class="alert alert-info"><strong>' + (obje[i].Number+1) + '</strong>. step : ' + obje[i].Insturction + '</div>');
+    }
+}
+var ingredtientsLoaded = null;
+function LoadIngredients(json) {
+    var obje = JSON.parse(json.replace(/&quot;/g, '"'));
+    ingredtientsLoaded = obje;
+    var l = obje.length;
+
+    for (var i = 0; i < l; i++) {
+        $("#ingredientsList").append('<li class="list-group-item">' + obje[i].Number + ' ' + obje[i].Si + ' : ' + obje[i].Name + '</li>');
+    }
+}
+
+function LoadIngredientsWithExistingData(obje) {
+
+    $("#ingredientsList").empty();
+
+    var l = obje.length;
+
+    for (var i = 0; i < l; i++) {
+        $("#ingredientsList").append('<li class="list-group-item">' + obje[i].Number + ' ' + obje[i].Si + ' : ' + obje[i].Name + '</li>');
+    }
+}
+
+var howManyPerson = 0;
+function SetSiToOther(original, newOne) {
+    var o = [];
+    for (var i = 0; i < ingredtientsLoaded.length; i++) {
+        var obj = { Number: ingredtientsLoaded[i].Number, Si: ingredtientsLoaded[i].Si, Name: ingredtientsLoaded[i].Name };
+        o[i] = obj;
+    }
+    for (var i = 0; i < o.length; i++) {
+        o[i].Number = (newOne / original) * o[i].Number;
+    }
+    $("#subForHowMany").empty();
+    $("#subForHowMany").append(" Required ingredients for " + howManyPerson + " people:");
+    LoadIngredientsWithExistingData(o);
+}
+

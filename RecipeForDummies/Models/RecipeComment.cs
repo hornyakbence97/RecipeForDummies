@@ -15,14 +15,14 @@ namespace RecipeForDummies.Models
         public int RecipeCommentId { get; set; }
         [Required]
         public string CommentText { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UploadedOrModified { get; set; }
 
         [ForeignKey("Recipe")]
-        public int ReceipeId { get; set; }
-        public Recipe Recipe { get; set; }
+        public virtual int ReceipeId { get; set; }
+        public virtual Recipe Recipe { get; set; }
 
-        public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public virtual string UserId { get; set; }
+        public virtual IdentityUser User { get; set; }
     }
 }

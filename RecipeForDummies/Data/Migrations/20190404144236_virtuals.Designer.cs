@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeForDummies.Data;
 
 namespace RecipeForDummies.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190404144236_virtuals")]
+    partial class virtuals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,7 +280,8 @@ namespace RecipeForDummies.Data.Migrations
 
                     b.Property<int>("ReceipeId");
 
-                    b.Property<DateTime>("UploadedOrModified");
+                    b.Property<DateTime>("UploadedOrModified")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("UserId");
 

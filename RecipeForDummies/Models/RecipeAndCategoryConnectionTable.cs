@@ -14,11 +14,11 @@ namespace RecipeForDummies.Models
         public int RecipeAndCategoryConnectionTableId { get; set; }
 
         [ForeignKey("Recipe")]
-        public int RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
+        public virtual int RecipeId { get; set; }
+        public virtual Recipe Recipe { get; set; }
 
         [ForeignKey("RecipeCategory")]
-        public int RecipeCategoryId { get; set; }
-        public RecipeCategory RecipeCategory { get; set; }
+        public virtual int RecipeCategoryId { get; set; }
+        public virtual RecipeCategory RecipeCategory { get; set; }
     }
 }

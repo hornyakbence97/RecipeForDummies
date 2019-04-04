@@ -17,10 +17,10 @@ namespace RecipeForDummies.Models
         public int RateValue { get; set; }
 
         [ForeignKey("Recipe")]
-        public int ReceipeId { get; set; }
-        public Recipe Recipe { get; set; }
+        public virtual int ReceipeId { get; set; }
+        public virtual Recipe Recipe { get; set; }
 
-        public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public virtual string UserId { get; set; }
+        public virtual IdentityUser User { get; set; }
     }
 }

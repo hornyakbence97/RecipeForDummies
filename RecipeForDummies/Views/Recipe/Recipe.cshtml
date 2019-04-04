@@ -1,0 +1,381 @@
+﻿
+@{
+    int i = 0;
+    @model Recipe
+    ViewData["Title"] = Model.Title;
+    string userid = (string)ViewData["userid"];
+    IEnumerable<RecipeAndCategoryConnectionTable> category = (IEnumerable<RecipeAndCategoryConnectionTable>)ViewData["category"];
+    string rateIt = Url.Action("RateIt");
+    int fiveStar = Model.RecipeRatings.Where(x => x.RateValue == 5).Count();
+    int fourStar = Model.RecipeRatings.Where(x => x.RateValue == 4).Count();
+    int threeStar = Model.RecipeRatings.Where(x => x.RateValue == 3).Count();
+    int twoStart = Model.RecipeRatings.Where(x => x.RateValue == 2).Count();
+    int oneStart = Model.RecipeRatings.Where(x => x.RateValue == 1).Count();
+    double onePercent = (double)Model.RecipeRatings.Count() / 100.0;
+    Layout = "~/Views/Recipe/_LayoutRecipe.cshtml";
+}
+
+<div class="container">
+    <h1>@Model.Title</h1>
+    <h6>Uploaded by: @Model.User.UserName on @Model.Uploaded</h6>
+
+</div>
+
+
+
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        @for (int j = 0; j < Model.ImageAndRecipeConnections.Count; j++)
+        {
+            <li data-target="#myCarousel" data-slide-to="@j"></li>
+        }
+    </ol>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+
+        <div class="item active">
+            <img src="@Url.Action("RenderImage", new { id = Model.RecipeId, num = -1, isTumbnail = true })" alt="@Model.Title">
+            <div class="carousel-caption">
+                <h3>@Model.Title</h3>
+                <p>@Model.SmallDescription</p>
+            </div>
+        </div>
+
+        @foreach (var item in Model.ImageAndRecipeConnections)
+        {
+            @*<div class="item @if (first) { first = false; Write("active"); } ">*@
+            <div class="item">
+                <img src="@Url.Action("RenderImage", new { id = Model.RecipeId, num = i, isTumbnail = false })" alt="@Model.Title">
+                <div class="carousel-caption">
+                    <h3>@Model.Title</h3>
+                    <p>@Model.SmallDescription</p>
+                </div>
+            </div>
+            i++;
+        }
+
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+
+<div class="container">
+    <h3>Complexity</h3>
+    @{
+        switch (Model.Complexity)
+        {
+            case Complexity.DormitoryEasy:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100" style="width:5%">
+                        Dormitory Easy
+                    </div>
+                </div>
+                break;
+            case Complexity.VeryEasy:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width:10%">
+                        Very Easy
+                    </div>
+                </div>
+                break;
+            case Complexity.Easy:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width:15%">
+                        Easy
+                    </div>
+                </div>
+                break;
+            case Complexity.Normal:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                        Normal
+                    </div>
+                </div>
+                break;
+            case Complexity.LittleHard:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width:65%">
+                        Little Hard
+                    </div>
+                </div>
+                break;
+            case Complexity.VeryHard:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width:85%">
+                        Very Hard
+                    </div>
+                </div>
+                break;
+            case Complexity.GordonRamseyHard:
+                <div class="progress" style="width: 30vw;">
+                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="100" style="width:99%">
+                        Gordon Ramsey Hard
+                    </div>
+                </div>
+                break;
+            default:
+                break;
+        }
+    }
+</div>
+<div class="container">
+    <h2>Description:</h2>
+    <h3>
+        @Model.SmallDescription
+    </h3>
+</div>
+
+<div class="container">
+    <h2>Categories</h2>
+    @foreach (var item in category)
+    {
+        <span class="badge">@item.RecipeCategory.CategoryName</span>
+    }
+</div>
+
+
+<div class="container" id="ingredients">
+
+    <h2 id="subForHowMany">
+        Required ingredients for @Model.ForHowManyPeople people:
+    </h2>
+    <button type="button" onclick="howManyPerson++; SetSiToOther('@Model.ForHowManyPeople', howManyPerson);" class="btn">+</button>
+    <button type="button" onclick="if (howManyPerson > 1){howManyPerson--;} SetSiToOther('@Model.ForHowManyPeople', howManyPerson);" class="btn">-</button>
+    <br />
+    <ul class="list-group" id="ingredientsList"></ul>
+    <script>
+        setTimeout(function () {
+            (function () {
+                LoadIngredients("@Model.IngredientsJson");
+                howManyPerson = @Model.ForHowManyPeople;
+            })();
+        }, 300);
+
+    </script>
+</div>
+
+
+
+
+<div class="container" id="instructions">
+    <h2>Instructions: </h2>
+    <script>
+        setTimeout(function () {
+            (function () {
+                LoadInstructions("@Model.InsturctionsJson");
+            })();
+        }, 300);
+
+    </script>
+    @*<div class="alert alert-info">
+            <strong>Info!</strong> This alert box could indicate a neutral informative change or action.
+        </div>*@
+</div>
+
+
+
+
+
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        <div class="container">
+            <h3>
+                Rate this Recipe:
+                <div class="row">
+                    <div class="rating">
+                        <input onclick="RateIt('5', '@Model.RecipeId', '@userid', '@rateIt' );" type="radio" id="star5" name="rating" value="5" /><label for="star5" title="Very cool">5 stars</label>
+                        <input onclick="RateIt('4', '@Model.RecipeId', '@userid', '@rateIt'  );" type="radio" id="star4" name="rating" value="4" /><label for="star4" title="Kinda cool">4 stars</label>
+                        <input onclick="RateIt('3', '@Model.RecipeId', '@userid', '@rateIt'  );" type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Not bad">3 stars</label>
+                        <input onclick="RateIt('2', '@Model.RecipeId', '@userid', '@rateIt'  );" type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Sucks">2 stars</label>
+                        <input onclick="RateIt('1', '@Model.RecipeId', '@userid', '@rateIt'  );" type="radio" id="star1" name="rating" value="1" /><label for="star1" title="Very sucks">1 star</label>
+                    </div>
+                </div>
+            </h3>
+        </div>
+
+    }
+}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="well well-sm">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 text-center">
+                        <h1 class="rating-num">
+                            @{
+                                if (Model.RecipeRatings.Count > 0)
+                                {
+                                    Write(Math.Round(Model.RecipeRatings.Average(x => x.RateValue), 2));
+                                }
+                                else
+                                {
+                                    Write("No rate");
+                                }
+                            }
+                        </h1>
+                        @{ if (Model.RecipeRatings.Count > 0)
+                            {
+                                int all = 0;
+                                double avg = Math.Round(Model.RecipeRatings.Average(x => x.RateValue), 2);
+                               
+                                <div class="rating">
+                                    @for (int p = 0; p < avg; p++)
+                                    {
+                                        all++;
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    }
+
+                                    @for (int p = 0; p < 5 - all; p++)
+                                    {
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                    }
+
+
+                                </div>
+                                    }
+                                    else
+                                    {
+                                       
+                                <div class="rating">
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </div>
+                            }
+                        }
+                        <div>
+                            <span class="glyphicon glyphicon-user"></span>@Model.RecipeRatings.Count total
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="row rating-desc">
+                            <div class="col-xs-3 col-md-3 text-right">
+                                <span class="glyphicon glyphicon-star"></span>5
+                            </div>
+                            <div class="col-xs-8 col-md-9">
+                                <div class="progress progress-striped">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: @{Write(Math.Round(fiveStar / onePercent));}%">
+                                        <span class="sr-only">@{Write(Math.Round(fiveStar / onePercent));}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end 5 -->
+                            <div class="col-xs-3 col-md-3 text-right">
+                                <span class="glyphicon glyphicon-star"></span>4
+                            </div>
+                            <div class="col-xs-8 col-md-9">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: @{Write(Math.Round(fourStar / onePercent));}%">
+                                        <span class="sr-only">@{Write(Math.Round(fourStar / onePercent));}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end 4 -->
+                            <div class="col-xs-3 col-md-3 text-right">
+                                <span class="glyphicon glyphicon-star"></span>3
+                            </div>
+                            <div class="col-xs-8 col-md-9">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: @{Write(Math.Round(threeStar / onePercent));}%">
+                                        <span class="sr-only">@{Write(Math.Round(threeStar / onePercent));}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end 3 -->
+                            <div class="col-xs-3 col-md-3 text-right">
+                                <span class="glyphicon glyphicon-star"></span>2
+                            </div>
+                            <div class="col-xs-8 col-md-9">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: @{Write(Math.Round(twoStart / onePercent));}%">
+                                        <span class="sr-only">@{Write(Math.Round(twoStart / onePercent));}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end 2 -->
+                            <div class="col-xs-3 col-md-3 text-right">
+                                <span class="glyphicon glyphicon-star"></span>1
+                            </div>
+                            <div class="col-xs-8 col-md-9">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
+                                         aria-valuemin="0" aria-valuemax="100" style="width: @{Write(Math.Round(oneStart / onePercent));}%">
+                                        <span class="sr-only">@{Write(Math.Round(oneStart / onePercent));}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end 1 -->
+                        </div>
+                        <!-- end row -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Comments</h2>
+    <br />
+
+    @foreach (var item in Model.RecipeComments)
+    {
+        <div class="media">
+            <div class="media-left">
+                <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="media-object" style="width:45px">
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">@item.User.UserName <small><i>Posted on @item.UploadedOrModified</i></small></h4>
+                <p>@item.CommentText</p>
+            </div>
+        </div>
+        <br />
+    }
+    @if (Model.RecipeComments.Count == 0)
+    {
+        <div class="media">
+            <div class="media-left">
+                <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="media-object" style="width:45px">
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">There are no comments yet <small><i></i></small></h4>
+                <p>There are no comments yet. Be the first one!</p>
+            </div>
+        </div>
+        <br />
+    }
+
+</div>
+<br />
+
+@if (User.Identity.IsAuthenticated)
+{
+
+    <div class="form-group">
+        <label for="comment">New comment:</label>
+        <textarea class="form-control" rows="5" id="comment"></textarea>
+    </div>
+    string sendComment = Url.Action("SendComment");
+    <button type="button" onclick="SendComment('@Model.RecipeId', '@userid', '@sendComment');" class="btn btn-primary btn-lg btn-block">Send comment</button>
+}
+

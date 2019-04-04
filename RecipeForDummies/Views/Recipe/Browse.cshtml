@@ -1,0 +1,139 @@
+﻿
+@{
+    @model IEnumerable<Recipe>
+    ViewData["Title"] = "Browse";
+    Layout = "~/Views/Recipe/_LayoutRecipe.cshtml";
+}
+<h2>Browse</h2>
+
+<div class="container">
+    <div class="row">
+        @*<div class="col-sm-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">BLACK FRIDAY DEAL</div>
+                <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+                <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
+            </div>
+        </div>*@
+
+        @foreach (Recipe item in Model)
+        {
+        <div class="col-sm-4">
+            <a asp-action="Recipe" asp-route-id="@item.RecipeId">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@item.Title</div>
+                    <div class="panel-body">
+                        <img class="img-responsive" style="width:100%" alt="Image" src="@Url.Action("RenderImage", new { id = item.RecipeId, num = -1, isTumbnail = true })" />
+
+                    </div>
+                    <div class="panel-footer">
+                        <div class="container" style="width: 100%">
+                           
+                            @{
+                                switch (item.Complexity)
+                                {
+                                    case Complexity.DormitoryEasy:
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100" style="width:5%">
+                                                Dormitory Easy
+                                            </div>
+                                        </div>
+                                        break;
+                                    case Complexity.VeryEasy:
+                                        <div class="progress" >
+                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width:10%">
+                                                Very Easy
+                                            </div>
+                                        </div>
+                                        break;
+                                    case Complexity.Easy:
+                                        <div class="progress" >
+                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width:15%">
+                                                Easy
+                                            </div>
+                                        </div>
+                                        break;
+                                    case Complexity.Normal:
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                                Normal
+                                            </div>
+                                        </div>
+                                        break;
+                                    case Complexity.LittleHard:
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width:65%">
+                                                Little Hard
+                                            </div>
+                                        </div>
+                                        break;
+                                    case Complexity.VeryHard:
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width:85%">
+                                                Very Hard
+                                            </div>
+                                        </div>
+                                        break;
+                                    case Complexity.GordonRamseyHard:
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="99" aria-valuemin="0" aria-valuemax="100" style="width:99%">
+                                                Gordon Ramsey Hard
+                                            </div>
+                                        </div>
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        </div>
+                        <div class="container" style="width: 100%">
+                           
+                            
+                                @item.SmallDescription
+                           
+                        </div>
+                        <div class="container" style="width:100%">
+                            @{ if (item.RecipeRatings.Count > 0)
+                                {
+                                    int all = 0;
+                                    double avg = Math.Round(item.RecipeRatings.Average(x => x.RateValue), 2);
+                                    Write(Math.Round(item.RecipeRatings.Average(x => x.RateValue), 2));
+                            <div class="rating">
+                                @for (int p = 0; p < avg; p++)
+                                {
+                                    all++;
+                                    <span class="glyphicon glyphicon-star"></span>
+                                }
+
+                                @for (int p = 0; p < 5 - all; p++)
+                                {
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                }
+
+
+                            </div>
+                                }
+                                else
+                                {
+                                    <div class="rating">
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </a>
+            </div>
+        }
+
+    </div>
+</div><br>
+

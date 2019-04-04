@@ -36,7 +36,7 @@ namespace RecipeForDummies
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
+                options.UseLazyLoadingProxies().UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             // services.AddDefaultIdentity<IdentityUser>()
             services.AddIdentity<IdentityUser, IdentityRole>(x =>
