@@ -372,6 +372,28 @@ namespace RecipeForDummies.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult LookUpByIngredients(IEnumerable<string> Ingredients)
+        {
+            List<RecipeAndTheIngredientsList> recipeAndTheIngredientsLists = new List<RecipeAndTheIngredientsList>();
+            foreach (var item in dbContext.Recipe)
+            {
+                var itemm = item;
+                RecipeAndTheIngredientsList s = new RecipeAndTheIngredientsList()
+                {
+                    Recipe = itemm,
+                    IngredientsList = JsonConvert.DeserializeObject<List<Ingredtients>>(item.IngredientsJson)
+                };
+
+                if (s.ContainOnlyTheElementsListedHere(Ingredients))
+                {
+                    recipeAndTheIngredientsLists.Add(s);
+                }
+            }
+
+            return View("Browse", recipeAndTheIngredientsLists.Select(x => x.Recipe));
+        }
+
         [HttpGet]
         public IActionResult GetAllIngredientsList()
         {

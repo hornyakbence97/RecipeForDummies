@@ -20,10 +20,10 @@
         {
         <div class="col-sm-4">
             <a asp-action="Recipe" asp-route-id="@item.RecipeId">
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" >
                     <div class="panel-heading">@item.Title</div>
                     <div class="panel-body">
-                        <img class="img-responsive" style="width:100%" alt="Image" src="@Url.Action("RenderImage", new { id = item.RecipeId, num = -1, isTumbnail = true })" />
+                        <img class="img-responsive" style="max-height:20vh" alt="Image" src="@Url.Action("RenderImage", new { id = item.RecipeId, num = -1, isTumbnail = true })" />
 
                     </div>
                     <div class="panel-footer">

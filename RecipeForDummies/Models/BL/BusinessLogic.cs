@@ -7,5 +7,8 @@ namespace RecipeForDummies.Models.BL
 {
     public class BusinessLogic
     {
+
+
+
     }
 }

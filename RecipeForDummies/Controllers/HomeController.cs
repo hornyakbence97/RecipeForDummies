@@ -32,7 +32,7 @@ namespace RecipeForDummies.Controllers
         public IActionResult Index()
         {
 
-            return View();
+            return RedirectToAction("Browse", "Recipe");
         }
 
         public IActionResult About()
