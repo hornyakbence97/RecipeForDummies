@@ -11,12 +11,46 @@
    
     <form asp-action="Search" method="post">
         <div class="form-group">
+            <label for="Complexity">Select Complexity (leave empty if you want to search in all category):</label>
+            <div class="checkbox">
+
+                @foreach (Complexity item in Enum.GetValues(typeof(Complexity)))
+                {
+                    switch (item)
+                    {
+                        case Complexity.DormitoryEasy:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Dormitory Easy</label>
+                            break;
+                        case Complexity.VeryEasy:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Very Easy</label>
+                            break;
+                        case Complexity.Easy:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Easy</label>
+                            break;
+                        case Complexity.Normal:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Normal</label>
+                            break;
+                        case Complexity.LittleHard:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Little Hard</label>
+                            break;
+                        case Complexity.VeryHard:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Very Hard</label>
+                            break;
+                        case Complexity.GordonRamseyHard:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Gordom Ramsey Hard</label>
+                            break;
+                        default:
+                            <label><input type="checkbox" value="@item" id="@item" name="Complexity">Normal</label>
+                            break;
+                    }
+                }
+            </div>
             <label for="search">Search in title:</label>
             <input type="text" class="form-control" id="search" name="search">
         </div>
 
         <div class="form-group">
-            <label for="CategoryList">Select Categories (leave empty if you want to search in all category):</label>
+            <label for="Category">Select Categories (leave empty if you want to search in all category):</label>
             <div class="checkbox">
 
                 @foreach (var item in Model)
@@ -29,6 +63,8 @@
             <input type="hidden" name="Text" />
             <input type="hidden" name="Input" />
             <input type="hidden" name="Selected" />
+          
+         
         </div>
         <button type="submit" class="btn btn-default">Search</button>
 

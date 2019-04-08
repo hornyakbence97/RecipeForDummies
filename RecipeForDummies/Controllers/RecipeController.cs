@@ -36,7 +36,7 @@ namespace RecipeForDummies.Controllers
         public IActionResult UploadRecipe()
         {
             
-            return View(dbContext.RecipeCategory);
+            return View(dbContext.RecipeCategory.OrderBy(x => x.CategoryName));
         }
 
         [Authorize]
@@ -106,7 +106,7 @@ namespace RecipeForDummies.Controllers
         [HttpGet]
         public IActionResult Search()
         {
-            return View(dbContext.RecipeCategory);
+            return View(dbContext.RecipeCategory.OrderBy(x => x.CategoryName));
         }
 
 
@@ -131,14 +131,44 @@ namespace RecipeForDummies.Controllers
                             }
                         }
                     }
+                    //------
+                    if (dto.Complexity != null && dto.Complexity.Count() > 0)
+                    {
+                        var finalList = new List<Recipe>();
+                        foreach (var item in recipesList)
+                        {
+                            if (dto.Complexity.Contains(item.Complexity.ToString()))
+                            {
+                                Recipe r = item;
+                                finalList.Add(r);
+                            }
+                        }
+                        recipesList = finalList;
+                    }
+                    //-----
                     return View("Browse", recipesList);
                 }
                 else
                 {
+                    //------
+                    if (dto.Complexity != null && dto.Complexity.Count() > 0)
+                    {
+                        var finalList = new List<Recipe>();
+                        foreach (var item in se)
+                        {
+                            if (dto.Complexity.Contains(item.Complexity.ToString()))
+                            {
+                                Recipe r = item;
+                                finalList.Add(r);
+                            }
+                        }
+                        se = finalList.AsQueryable();
+                    }
+                    //-----
                     return View("Browse", se);
                 }
             }
-            else
+            else 
             {
                 List<Recipe> recipesList = new List<Recipe>();
                 if (dto.Category != null && dto.Category.Count() > 0)
@@ -155,6 +185,40 @@ namespace RecipeForDummies.Controllers
                             }
                         }
                     }
+                    //------
+                    if (dto.Complexity != null && dto.Complexity.Count() > 0)
+                    {
+                        var finalList = new List<Recipe>();
+                        foreach (var item in recipesList)
+                        {
+                            if (dto.Complexity.Contains(item.Complexity.ToString()))
+                            {
+                                Recipe r = item;
+                                finalList.Add(r);
+                            }
+                        }
+                        recipesList = finalList;
+                    }
+                    //-----
+                    return View("Browse", recipesList);
+                }
+                else if (dto.Complexity != null && dto.Complexity.Count() > 0)
+                {
+                    //------
+                    
+                    
+                        var finalList = new List<Recipe>();
+                        foreach (var item in dbContext.Recipe)
+                        {
+                            if (dto.Complexity.Contains(item.Complexity.ToString()))
+                            {
+                                Recipe r = item;
+                                finalList.Add(r);
+                            }
+                        }
+                        recipesList = finalList;
+                    
+                    //-----
                     return View("Browse", recipesList);
                 }
             }
@@ -182,6 +246,7 @@ namespace RecipeForDummies.Controllers
             ViewData["userid"] = userManager.GetUserId(this.User);
             ViewData["category"] = dbContext.RecipeAndCategoryConnectionTable.Where(x => x.RecipeId == id);
             ViewData["fav"] = dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Where(x => x.RecipeId == id && x.UserId == userManager.GetUserId(User)).Count() > 0 ? true : false;
+            ViewData["isModerator"] = this.User.IsInRole("Moderator");
             return View(recipe);
         }
 
@@ -265,9 +330,14 @@ namespace RecipeForDummies.Controllers
         [Authorize]
         public IActionResult CreateCategory(string Category)
         {
-
-            dbContext.RecipeCategory.Add(new RecipeCategory() { CategoryName = Category });
-            dbContext.SaveChanges();
+            if (Category != null && Category.Length > 0)
+            {
+                if (dbContext.RecipeCategory.Where(x => x.CategoryName == Category).Count() == 0)
+                {
+                    dbContext.RecipeCategory.Add(new RecipeCategory() { CategoryName = Category });
+                    dbContext.SaveChanges();
+                }
+            }
 
             return View((object)Category);
         }
@@ -294,6 +364,36 @@ namespace RecipeForDummies.Controllers
         public IActionResult MyFavourites()
         {
             return View("Browse", dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Select(x => x.Recipe));
+        }
+
+        [HttpGet]
+        public IActionResult LookUpByIngredients()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetAllIngredientsList()
+        {
+            var k = dbContext.Recipe.Select(x => x.IngredientsJson);
+            List<string> ingred = new List<string>();
+            foreach (var item in k)
+            {
+                var obj = JsonConvert.DeserializeObject<List<Ingredtients>>(item);
+                foreach (var ob in obj)
+                {
+                    Ingredtients ing = ob;
+                    ing.Name = ing.Name.ToUpper();
+                    if (!ingred.Contains(ing.Name))
+                    {
+                        ingred.Add(ing.Name);
+                    }
+                }
+            }
+
+          
+
+            return Json(ingred);
         }
 
         private void CreateRoles()

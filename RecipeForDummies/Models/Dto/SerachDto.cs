@@ -10,5 +10,6 @@ namespace RecipeForDummies.Models.Dto
     {
         public IEnumerable<string> Category { get; set; }
         public string search { get; set; }
+        public IEnumerable<string> Complexity { get; set; }
     }
 }

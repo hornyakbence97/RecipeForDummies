@@ -5,6 +5,7 @@
     ViewData["Title"] = Model.Title;
     string userid = (string)ViewData["userid"];
     bool fav = (bool)ViewData["fav"];
+    bool isModerator = (bool)ViewData["isModerator"];
     IEnumerable<RecipeAndCategoryConnectionTable> category = (IEnumerable<RecipeAndCategoryConnectionTable>)ViewData["category"];
     string rateIt = Url.Action("RateIt");
     int fiveStar = Model.RecipeRatings.Where(x => x.RateValue == 5).Count();
@@ -360,8 +361,11 @@
                 <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="media-object" style="width:45px">
             </div>
             <div class="media-body">
-                <h4 class="media-heading">@item.User.UserName <small><i>Posted on @item.UploadedOrModified</i></small></h4>
+                <h4 class="media-heading">@item.User.UserName <small>
+    <i>Posted on @item.UploadedOrModified</i> @if (isModerator){<a asp-action="DeleteMessage" asp-route-id="@{Write(item.RecipeCommentId);} ">Delete</a> }</small></h4>
                 <p>@item.CommentText</p>
+
+
             </div>
         </div>
         <br />
