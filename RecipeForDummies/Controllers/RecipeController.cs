@@ -181,6 +181,7 @@ namespace RecipeForDummies.Controllers
             Recipe recipe = dbContext.Recipe.Where(x => x.RecipeId == id).FirstOrDefault();
             ViewData["userid"] = userManager.GetUserId(this.User);
             ViewData["category"] = dbContext.RecipeAndCategoryConnectionTable.Where(x => x.RecipeId == id);
+            ViewData["fav"] = dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Where(x => x.RecipeId == id && x.UserId == userManager.GetUserId(User)).Count() > 0 ? true : false;
             return View(recipe);
         }
 
@@ -253,6 +254,47 @@ namespace RecipeForDummies.Controllers
             return File(photoBack, "image/png");
         }
 
+        [HttpGet]
+        [Authorize]
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult CreateCategory(string Category)
+        {
+
+            dbContext.RecipeCategory.Add(new RecipeCategory() { CategoryName = Category });
+            dbContext.SaveChanges();
+
+            return View((object)Category);
+        }
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddFavourite(string id, string userid)
+        {
+            var c = dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Where(x => x.RecipeId == int.Parse(id) && x.UserId == userid);
+            if (c.Count() == 0)
+            {
+                dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Add(new UserAndRecipeAddedToFavouriteConnectionTable() { RecipeId = int.Parse(id), UserId = userid });
+                dbContext.SaveChanges();
+            }
+            else
+            {
+                dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Remove(c.FirstOrDefault());
+                dbContext.SaveChanges();
+            }
+            return Ok();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult MyFavourites()
+        {
+            return View("Browse", dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Select(x => x.Recipe));
+        }
 
         private void CreateRoles()
         {

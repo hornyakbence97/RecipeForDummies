@@ -4,6 +4,7 @@
     @model Recipe
     ViewData["Title"] = Model.Title;
     string userid = (string)ViewData["userid"];
+    bool fav = (bool)ViewData["fav"];
     IEnumerable<RecipeAndCategoryConnectionTable> category = (IEnumerable<RecipeAndCategoryConnectionTable>)ViewData["category"];
     string rateIt = Url.Action("RateIt");
     int fiveStar = Model.RecipeRatings.Where(x => x.RateValue == 5).Count();
@@ -192,8 +193,21 @@
 @{
     if (User.Identity.IsAuthenticated)
     {
+  
+
         <div class="container">
             <h3>
+                @{
+                    if (!fav)
+                    {
+                        <input type="button" class="btn btn-default" onclick="AddFavourite('@Model.RecipeId', '@userid')" id="favourite" value="Add to favourite" />
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-default" onclick="AddFavourite('@Model.RecipeId', '@userid')" id="favourite" value="Remove from favourites" />
+                    }
+                }
+
                 Rate this Recipe:
                 <div class="row">
                     <div class="rating">
@@ -206,6 +220,7 @@
                 </div>
             </h3>
         </div>
+
 
     }
 }

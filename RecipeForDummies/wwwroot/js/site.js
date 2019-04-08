@@ -143,3 +143,18 @@ function SetSiToOther(original, newOne) {
     LoadIngredientsWithExistingData(o);
 }
 
+//category add:
+$("#addcategory").on("click", function () {
+    var c = $("#Category").val();
+
+    $.post("CreateCategory?Category=" + c);
+    $("#closeModal").click();
+    $("#clist").append('<label><input type="checkbox" value="'+c+'" id="'+c+'" name="Category">'+c+'</label>');
+});
+
+
+//favourite:
+function AddFavourite(id, userid) {
+    $.post("../AddFavourite?id=" + id + "&userid=" + userid);
+    $("#favourite").val("Done");
+}

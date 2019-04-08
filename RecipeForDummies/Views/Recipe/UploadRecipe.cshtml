@@ -71,7 +71,39 @@
 
         <div class="form-group">
             <label for="CategoryList">Select Categories:</label>
-            <div class="checkbox">
+            <p><a data-toggle="modal" data-target="#createcategory">Click here to create new category</a></p>
+            <!-- Modal -->
+            <div class="modal fade" id="createcategory" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" id="closeModal" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">New Category</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h2>CreateCategory</h2>
+
+                            
+
+                                <div class="form-group">
+                                    <label for="Title">Category name:</label>
+                                    <input type="text" class="form-control"  placeholder="Enter new category..." id="Category">
+                                </div>
+
+
+                                <button type="button" id="addcategory" class="btn btn-default">Add Category</button>
+                           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="checkbox" id="clist">
 
                 @foreach (var item in Model)
                 {
