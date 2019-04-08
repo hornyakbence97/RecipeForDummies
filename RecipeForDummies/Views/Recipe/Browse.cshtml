@@ -20,7 +20,7 @@
         {
         <div class="col-sm-4">
             <a asp-action="Recipe" asp-route-id="@item.RecipeId">
-                <div class="panel panel-primary" >
+                <div class="panel panel-primary" style="height: 50vh;" >
                     <div class="panel-heading">@item.Title</div>
                     <div class="panel-body">
                         <img class="img-responsive" style="max-height:20vh" alt="Image" src="@Url.Action("RenderImage", new { id = item.RecipeId, num = -1, isTumbnail = true })" />
@@ -89,7 +89,7 @@
                         <div class="container" style="width: 100%">
                            
                             
-                                @item.SmallDescription
+                                @item.SmallDescription.Substring(0,(item.SmallDescription.Length > 180) ? 185 : item.SmallDescription.Length-1)
                            
                         </div>
                         <div class="container" style="width:100%">

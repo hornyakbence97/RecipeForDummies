@@ -19,7 +19,7 @@
 
 <div class="container">
     <h1>@Model.Title</h1>
-    <h6>Uploaded by: @Model.User.UserName on @Model.Uploaded</h6>
+    <h6>Uploaded by: @Model.User.UserName on @Model.Uploaded @if (isModerator){<a asp-action="DeleteRecipe" asp-route-id="@{Write(Model.RecipeId);} ">Delete</a>}</h6>
 
 </div>
 

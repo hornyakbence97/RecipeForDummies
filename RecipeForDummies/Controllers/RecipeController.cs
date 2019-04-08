@@ -97,7 +97,8 @@ namespace RecipeForDummies.Controllers
             dbContext.SaveChanges();
 
 
-            return View(dbContext.RecipeCategory);
+            //return View(dbContext.RecipeCategory);
+            return RedirectToAction("Recipe", new { id = recipe.RecipeId });
         }
 
 
@@ -363,7 +364,7 @@ namespace RecipeForDummies.Controllers
         [Authorize]
         public IActionResult MyFavourites()
         {
-            return View("Browse", dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Select(x => x.Recipe));
+            return View("Browse", dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Where(x => x.UserId == userManager.GetUserId(User)).Select(x => x.Recipe));
         }
 
         [HttpGet]
@@ -418,11 +419,94 @@ namespace RecipeForDummies.Controllers
             return Json(ingred);
         }
 
+
+        [HttpGet]
+        [Authorize(Roles = "Moderator")]
+        public IActionResult DeleteMessage(string id)
+        {
+            var el = dbContext.RecipeComment.Where(x => x.RecipeCommentId == int.Parse(id)).FirstOrDefault();
+            int rid = -1;
+            if (el != null)
+            {
+                rid = el.ReceipeId;
+                dbContext.RecipeComment.Remove(el);
+                dbContext.SaveChanges();
+            }
+
+            if (rid != -1)
+            {
+                return RedirectToAction("Recipe", new { id = rid });
+            }
+            else
+            {
+                return RedirectToAction("Browse");
+            }
+        }
+        [HttpGet]
+        [Authorize(Roles = "Moderator")]
+        public IActionResult DeleteRecipe(string id)
+        {
+            var el = dbContext.Recipe.Where(x => x.RecipeId == int.Parse(id)).FirstOrDefault();
+            if (el != null)
+            {
+
+                var todel = dbContext.ImageAndRecipeConnection.Where(x => x.RecipeId == el.RecipeId);
+                var todel2 = dbContext.RecipeAndCategoryConnectionTable.Where(x => x.RecipeId == el.RecipeId);
+                var todel3 = dbContext.RecipeComment.Where(x => x.ReceipeId == el.RecipeId);
+                var todel4 = dbContext.RecipeRating.Where(x => x.ReceipeId == el.RecipeId);
+                var todel5 = dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Where(x => x.RecipeId == el.RecipeId);
+
+                foreach (var item in todel)
+                {
+                    ImageAndRecipeConnection m = item;
+                    dbContext.ImageAndRecipeConnection.Remove(m);
+                }
+                foreach (var item in todel2)
+                {
+                    RecipeAndCategoryConnectionTable m = item;
+                    dbContext.RecipeAndCategoryConnectionTable.Remove(m);
+                }
+                foreach (var item in todel3)
+                {
+                    RecipeComment m = item;
+                    dbContext.RecipeComment.Remove(m);
+                }
+                foreach (var item in todel4)
+                {
+                    RecipeRating m = item;
+                    dbContext.RecipeRating.Remove(m);
+                }
+                foreach (var item in todel5)
+                {
+                    UserAndRecipeAddedToFavouriteConnectionTable m = item;
+                    dbContext.UserAndRecipeAddedToFavouriteConnectionTable.Remove(m);
+                }
+
+                dbContext.Recipe.Remove(el);
+                dbContext.SaveChanges();
+            }
+            return RedirectToAction("Browse");
+        }
+
         private void CreateRoles()
         {
             if (!roleManager.RoleExistsAsync("Moderator").Result)
             {
                 roleManager.CreateAsync(new IdentityRole("Moderator"));
+            }
+
+            var user = new IdentityUser();
+            user.UserName = "admin";
+            user.Email = "admin@admin.admin";
+
+            string userPWD = "admin123456";
+
+            IdentityResult chkUser = userManager.CreateAsync(user, userPWD).Result;
+
+            //Add default User to Role Admin    
+            if (chkUser.Succeeded)
+            {
+                var result1 = userManager.AddToRoleAsync(user, "Moderator").Result;
             }
         }
     }
